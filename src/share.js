@@ -52,7 +52,7 @@ export async function generateShareImage(primary, userLevels, dimOrder, dimDefs,
   y += 36
 
   // 匹配度徽章
-  const badgeText = `匹配度 ${primary.similarity}%` + (primary.exact != null ? ` · 精准命中 ${primary.exact}/15 维` : '')
+  const badgeText = `趣味相似度 ${primary.similarity}%` + (primary.exact != null ? ` · 同级维度 ${primary.exact}/15` : '')
   ctx.font = '500 20px system-ui, "PingFang SC", "Microsoft YaHei", sans-serif'
   const badgeW = ctx.measureText(badgeText).width + 40
   roundRect(ctx, (W - badgeW) / 2, y - 16, badgeW, 36, 18)
