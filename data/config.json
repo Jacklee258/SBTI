@@ -26,12 +26,19 @@
     "title": "SBTI 人格测试",
     "subtitle": "MBTI已经过时，SBTI来了。",
     "author": "B站UP主@蛆肉儿串儿 原创",
-    "funNote": "本测试仅供娱乐，别拿它当诊断、面试、相亲、分手、招魂、算命或人生判决书。",
-    "funNoteSpecial": "本测试仅供娱乐。隐藏人格和傻乐兜底都属于作者故意埋的损招，请勿把它当成医学、心理学、相学、命理学或灵异学依据。"
+    "funNote": "本测试仅供娱乐，别拿它当诊断、面试、相亲、分手、招魂、算命或人生判决书。 分型和相似度未经职业测评效度验证，不用于招聘筛选或职业能力判断。",
+    "funNoteSpecial": "本测试仅供娱乐。隐藏人格和傻乐兜底都属于作者故意埋的损招，请勿把它当成医学、心理学、相学、命理学或灵异学依据。 分型和相似度未经职业测评效度验证，不用于招聘筛选或职业能力判断。"
   },
   "drinkGate": {
     "questionId": "drink_gate_q1",
     "triggerValue": 3,
     "drunkTriggerValue": 2
+  },
+  "goodwen": {
+    "url": "https://goodwen.cc/join#IVL2TvrcVPxvzZuoz0vHVymfoQpJBwk3AaZQzyCVW8E",
+    "expiresAt": "2026-10-28T23:59:00Z"
+  },
+  "analytics": {
+    "endpoint": ""
   }
 }
