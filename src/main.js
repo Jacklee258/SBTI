@@ -1,6 +1,7 @@
 import { calcDimensionScores, scoresToLevels, determineResult } from './engine.js'
 import { createQuiz } from './quiz.js'
 import { renderResult } from './result.js'
+import { createTracker } from './metrics.js'
 import './style.css'
 
 async function loadJSON(path) {
@@ -15,6 +16,9 @@ async function init() {
     loadJSON(new URL('../data/types.json', import.meta.url).href),
     loadJSON(new URL('../data/config.json', import.meta.url).href),
   ])
+
+  const track = createTracker(config.analytics)
+  track('page_view')
 
   const pages = {
     intro: document.getElementById('page-intro'),
@@ -32,21 +36,21 @@ async function init() {
     const scores = calcDimensionScores(answers, questions.main)
     const levels = scoresToLevels(scores, config.scoring.levelThresholds)
     const result = determineResult(levels, dimensions.order, types.standard, types.special, { isDrunk })
-    renderResult(result, levels, dimensions.order, dimensions.definitions, config)
+    renderResult(result, levels, dimensions.order, dimensions.definitions, config, track)
+    track('quiz_complete')
     showPage('result')
   }
 
   const quiz = createQuiz(questions, config, onQuizComplete)
 
-  document.getElementById('btn-start').addEventListener('click', () => {
+  function startQuiz() {
     quiz.start()
+    track('quiz_start')
     showPage('quiz')
-  })
+  }
 
-  document.getElementById('btn-restart').addEventListener('click', () => {
-    quiz.start()
-    showPage('quiz')
-  })
+  document.getElementById('btn-start').addEventListener('click', startQuiz)
+  document.getElementById('btn-restart').addEventListener('click', startQuiz)
 }
 
 init()

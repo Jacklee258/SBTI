@@ -7,7 +7,7 @@ const LEVEL_CLASS = { L: 'level-low', M: 'level-mid', H: 'level-high' }
 /**
  * 渲染测试结果
  */
-export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
+export function renderResult(result, userLevels, dimOrder, dimDefs, config, track = () => {}) {
   const { primary, secondary, rankings, mode } = result
 
   // Kicker
@@ -22,7 +22,7 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
 
   // 匹配度
   document.getElementById('result-badge').textContent =
-    `匹配度 ${primary.similarity}%` + (primary.exact != null ? ` · 精准命中 ${primary.exact}/15 维` : '')
+    `趣味相似度 ${primary.similarity}%` + (primary.exact != null ? ` · 同级维度 ${primary.exact}/15` : '')
 
   // Intro & 描述
   document.getElementById('result-intro').textContent = primary.intro || ''
@@ -86,6 +86,37 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
   const btnDownload = document.getElementById('btn-download')
   btnDownload.onclick = () => {
     generateShareImage(primary, userLevels, dimOrder, dimDefs, mode)
+    track('share_image_requested')
+  }
+
+  // 跳转到已核实的 Goodwen 公开问卷；到期后自动隐藏入口。
+  const goodwenSection = document.getElementById('goodwen-section')
+  const goodwenLink = document.getElementById('goodwen-link')
+  try {
+    const url = new URL(config.goodwen?.url)
+    const expiresAt = Date.parse(config.goodwen?.expiresAt)
+    if (url.protocol === 'https:' && url.hostname === 'goodwen.cc' &&
+        url.pathname === '/join' && url.hash &&
+        Number.isFinite(expiresAt) && Date.now() < expiresAt) {
+      goodwenLink.href = url.href
+      goodwenSection.hidden = false
+      goodwenLink.onclick = () => track('goodwen_click')
+    } else goodwenSection.hidden = true
+  } catch { goodwenSection.hidden = true }
+
+  // 分享测试链接：只记录发起动作，不宣称对方已收到或完成分享。
+  document.getElementById('btn-share-link').onclick = async () => {
+    const url = new URL(import.meta.env.BASE_URL, window.location.origin).href
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'SBTI 趣味测试', url })
+        track('share_link_intent')
+      } else {
+        await navigator.clipboard.writeText(url)
+        track('share_link_copied')
+        window.alert('测试链接已复制')
+      }
+    } catch { /* 用户取消分享或剪贴板不可用 */ }
   }
 
   // 复制 AI Agent 命令
